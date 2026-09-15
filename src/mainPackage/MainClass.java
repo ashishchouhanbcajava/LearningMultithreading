@@ -98,15 +98,83 @@ public class MainClass {
 //		System.out.println("T3: " + t3.getState());
 //		System.out.println("T4: " + t4.getState());
 
-		Counter counter = new Counter();
-		SecondClass t1 = new SecondClass(counter);
-		SecondClass t2 = new SecondClass(counter);
+//		Counter counter = new Counter();
+//		SecondClass t1 = new SecondClass(counter);
+//		SecondClass t2 = new SecondClass(counter);
+//
+//		t1.start();
+//		t2.start();
+//		t1.join();
+//		t2.join();
+//		counter.getCount();
+
+		// we can achieve thread safety using the following
+		// 1. synchronized keyword
+		// 2. instance of reentrant Lock class
+		// 3. Atomic classes instances
+
+//		BankAccount account = new BankAccount();
+//
+//		Runnable task = new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				account.withDraw(50);
+//			}
+//		};
+//
+//		Thread t11 = new Thread(task, "thread 1");
+//		Thread t12 = new Thread(task, "thread 2");
+//		t11.start();
+//		t12.start();
+
+		Object lock1 = new Object();
+		Object lock2 = new Object();
+
+		Thread t1 = new Thread(() -> {
+
+			synchronized (lock1) {
+
+				System.out.println("Thread 1: acquired lock1");
+
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				System.out.println("Thread 1: trying to acquire lock2");
+
+				synchronized (lock2) {
+
+					System.out.println("Thread 1: acquired lock2");
+				}
+			}
+		});
+
+		Thread t2 = new Thread(() -> {
+
+			synchronized (lock2) {
+
+				System.out.println("Thread 2: acquired lock2");
+
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				System.out.println("Thread 2: trying to acquire lock1");
+
+				synchronized (lock1) {
+
+					System.out.println("Thread 2: acquired lock1");
+				}
+			}
+		});
 
 		t1.start();
 		t2.start();
-		t1.join();
-		t2.join();
-		counter.getCount();
 	}
 
 }
