@@ -21,20 +21,45 @@ public class FutureAndCompletableFutureExample {
 	public static void main(String[] args) throws InterruptedException, ExecutionException, TimeoutException {
 		ExecutorService threadPool = Executors.newFixedThreadPool(3);
 
+		long startTime = System.currentTimeMillis();
+
+		System.out.println("1. Task submitting");
+
 		Future<?> submit = threadPool.submit(() -> {
+			System.out.println("2. Task started");
+
 			try {
 				File file = new File("C:\\Users\\DELL\\Desktop\\LearningMultithreading\\src\\Employees.json");
+
+				System.out.println("3. File exists: " + file.exists());
+
 				List<Employee> employees = getEmployees(file);
-				System.out.print(employees);
-				Thread.sleep(2000);
+
+				System.out.println("4. Employees loaded: " + employees.size());
+
+				Thread.sleep(6000);
+
+				System.out.println("5. Task completed");
 
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 		});
+		
+		
+
+		System.out.println("6. Waiting for task");
+
 		submit.get();
+
+		System.out.println("7. Task result received");
+
+		long endTime = System.currentTimeMillis();
+
+		double executionTime = (endTime - startTime) / 1000.0;
+
+		System.out.println("Total execution time: " + executionTime + " seconds");
+
 		threadPool.shutdown();
 	}
 
